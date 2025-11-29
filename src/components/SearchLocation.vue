@@ -3,15 +3,13 @@
 </script>
 
 <template>
-  <div class="search-location">
-    <input type="text" placeholder="Search for a city" />
-  </div>
+  <input type="text" placeholder="Search for a city" />
 </template>
 
 <style scoped lang="scss">
 input {
-  flex: 1;
-  padding: 1rem 1.2rem;
+  height: 4.8rem;
+  padding-inline: 1rem;
   border-radius: 10px;
   border: 2px solid var(--color-weather-light-blue);
   background-color: rgba(255, 255, 255, 0.9);

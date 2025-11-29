@@ -57,10 +57,6 @@ ul {
   }
 }
 
-li {
-  flex: 0 0 auto;
-}
-
 button {
   height: 3.8rem;
   padding-inline: 2.4rem;
@@ -73,10 +69,15 @@ button {
   line-height: 120%;
   letter-spacing: 0%;
   text-align: center;
+  transition: background-color 0.3s ease;
+  color: var(--color-text-primary);
+
+  &:hover {
+    background-color: var(--color-weather-light-blue);
+  }
 }
 
 button[data-active='true'] {
   background-color: var(--color-weather-blue);
-  color: var(--color-text-primary);
 }
 </style>
