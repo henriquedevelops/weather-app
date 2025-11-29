@@ -12,5 +12,6 @@ h1 {
   font-weight: 600;
   line-height: 120%;
   letter-spacing: 0%;
+  margin-bottom: 59px;
 }
 </style>

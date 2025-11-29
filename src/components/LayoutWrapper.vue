@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import GreetingHeader from './GreetingHeader.vue'
+import SearchLocation from './SearchLocation.vue'
 </script>
 
 <template>
-  <div class="">
-    <header class="">
-      <GreetingHeader />
-    </header>
+  <header>
+    <GreetingHeader />
+    <SearchLocation />
+  </header>
 
-    <main class="">
-      <slot />
-    </main>
-  </div>
+  <main>
+    <slot />
+  </main>
 </template>
 
 <style scoped lang="scss">
