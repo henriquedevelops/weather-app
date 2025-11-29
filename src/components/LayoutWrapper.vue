@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import GreetingHeader from './GreetingHeader.vue'
 import SearchLocation from './SearchLocation.vue'
+import LocationTabs from './LocationTabs.vue'
 </script>
 
 <template>
   <header>
     <GreetingHeader />
     <SearchLocation />
+    <LocationTabs />
   </header>
 
   <main>
