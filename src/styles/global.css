@@ -1,0 +1,15 @@
+:root {
+  /* Text Colors */
+  --color-text-primary: #192e4e;
+  --color-text-secondary: #989eaa;
+
+  /* Weather Colors */
+  --color-weather-light-blue: #e4f0fe;
+  --color-weather-blue: #c3e0fb;
+  --color-weather-green: #cdf0eb;
+  --color-weather-yellow: #fff4da;
+  --color-weather-red: #fdd4d7;
+
+  /* Spacing */
+  --padding-horizontal-main: 16px;
+}
