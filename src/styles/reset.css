@@ -116,10 +116,6 @@ body {
   height: auto;
 }
 
-:where(svg) {
-  fill: currentColor;
-}
-
 /* Table resets */
 :where(table) {
   border-collapse: collapse;

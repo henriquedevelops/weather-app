@@ -47,7 +47,6 @@ ul {
   display: flex;
   gap: 0.8rem;
   padding-inline: var(--padding-horizontal-main);
-  padding-block: 0.8rem;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;

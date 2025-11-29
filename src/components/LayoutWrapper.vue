@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import GreetingHeader from './GreetingHeader.vue'
-import SearchLocation from './SearchLocation.vue'
-import LocationTabs from './LocationTabs.vue'
+import GreetingHeader from './header/GreetingHeader.vue'
+import SearchLocation from './header/SearchLocation.vue'
+import LocationTabs from './header/LocationTabs.vue'
 </script>
 
 <template>
@@ -19,7 +19,11 @@ import LocationTabs from './LocationTabs.vue'
 <style scoped lang="scss">
 header {
   padding-inline: var(--padding-horizontal-main);
-  padding-top: 24px;
-  padding-bottom: 59px;
+  padding-block: 24px;
+
+  @media (min-width: 1024px) {
+    padding-top: 5.6rem;
+    padding-bottom: 4.8rem;
+  }
 }
 </style>

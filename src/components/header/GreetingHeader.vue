@@ -3,7 +3,7 @@ const name = 'Samantha'
 </script>
 
 <template>
-  <h1 class="text-primary">Good afternoon, {{ name }} 🌞</h1>
+  <h1>Good afternoon, {{ name }} 🌞</h1>
 </template>
 
 <style scoped lang="scss">
@@ -13,5 +13,11 @@ h1 {
   line-height: 120%;
   letter-spacing: 0%;
   margin-bottom: 59px;
+  color: var(--color-text-primary);
+
+  @media (min-width: 1024px) {
+    padding-left: 1.2rem;
+    font-size: 4.8rem;
+  }
 }
 </style>
