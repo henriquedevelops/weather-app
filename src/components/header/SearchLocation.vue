@@ -105,6 +105,12 @@ const outlineColor = computed(() => getTemperatureColor(weatherStore.currentTemp
   position: relative;
   width: 100%;
   margin-bottom: 2.4rem;
+
+  @media (min-width: 1024px) {
+    max-width: 250px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
 }
 
 input {

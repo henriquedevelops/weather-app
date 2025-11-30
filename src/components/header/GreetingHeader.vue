@@ -18,6 +18,8 @@ h1 {
   @media (min-width: 1024px) {
     padding-left: 1.2rem;
     font-size: 4.8rem;
+    margin-bottom: 0;
+    flex: 1;
   }
 }
 </style>

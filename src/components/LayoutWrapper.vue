@@ -7,8 +7,10 @@ import LocationTabs from './header/LocationTabs.vue'
 <template>
   <div class="layout-wrapper">
     <header>
-      <GreetingHeader />
-      <SearchLocation />
+      <div class="header-top">
+        <GreetingHeader />
+        <SearchLocation />
+      </div>
       <LocationTabs />
     </header>
 
@@ -41,6 +43,16 @@ header {
     padding-top: 5.6rem;
     padding-bottom: 3.7rem;
     padding-inline: 0;
+  }
+}
+
+.header-top {
+  @media (min-width: 1024px) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 4.8rem;
   }
 }
 </style>
