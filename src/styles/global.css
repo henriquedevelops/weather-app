@@ -3,6 +3,9 @@
   --color-text-primary: #192e4e;
   --color-text-secondary: #989eaa;
 
+  /* Hover and loading states */
+  --color-neutral-100: #f5f5f5;
+
   /* Spacing */
   --padding-horizontal-main: 16px;
 }
