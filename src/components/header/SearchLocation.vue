@@ -65,7 +65,7 @@ onUnmounted(() => {
   }
 })
 
-const borderColor = computed(() => getTemperatureColor(weatherStore.currentTemperature))
+const outlineColor = computed(() => getTemperatureColor(weatherStore.currentTemperature))
 </script>
 
 <template>
@@ -75,7 +75,7 @@ const borderColor = computed(() => getTemperatureColor(weatherStore.currentTempe
       v-model="searchQuery"
       type="text"
       placeholder="Search for a city"
-      :style="{ borderColor, borderWidth: '2px', borderStyle: 'solid' }"
+      :style="{ outlineColor }"
       @keypress="handleKeyPress"
       @focus="
         showAutocomplete = searchQuery.trim().length > 0 && weatherStore.searchResults.length > 0
@@ -113,15 +113,18 @@ input {
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.9);
   font-size: 1.4rem;
-  outline: none;
+  border: none;
+  outline-color: #f5f5f5;
+  outline-width: 2px;
+  outline-style: solid;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  transition: border-color 0.3s ease;
+  transition: outline-color 0.3s ease;
 
   &:focus {
-    border-color: var(--color-weather-blue);
+    outline-color: var(--color-weather-blue);
   }
 
   &::placeholder {
