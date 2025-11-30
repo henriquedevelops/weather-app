@@ -16,6 +16,9 @@ input {
   font-size: 1.4rem;
   outline: none;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   transition: border-color 0.3s ease;
   margin-bottom: 2.4rem;
 

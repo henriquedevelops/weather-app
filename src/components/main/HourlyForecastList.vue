@@ -11,7 +11,7 @@ const hours = [
 </script>
 
 <template>
-  <ul class="hourly-row" aria-label="Hourly Forecast">
+  <ul class="hourly-list" aria-label="Hourly Forecast">
     <li v-for="(hour, i) in hours" :key="i">
       <HourlyForecastItem :time="hour.time" :temperature="hour.temperature" :icon="hour.icon" />
     </li>
@@ -19,10 +19,11 @@ const hours = [
 </template>
 
 <style scoped>
-.hourly-row {
+.hourly-list {
   display: flex;
-  padding-inline: 1.2rem;
-  padding-top: 3.7rem;
+
+  /* Stretch the tabs to be full-width, ignoring the header's side padding */
+  margin-inline: calc(-1 * var(--padding-horizontal-main));
   overflow-x: auto;
   list-style: none;
   scrollbar-width: none; /* Firefox */
@@ -30,6 +31,12 @@ const hours = [
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
     margin: 0;
+  }
+
+  @media (min-width: 1024px) {
+    padding-top: 3.7rem;
+    margin-inline: 0;
+    gap: 2.4rem;
   }
 }
 </style>

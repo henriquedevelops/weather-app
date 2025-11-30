@@ -12,7 +12,7 @@ h1 {
   font-weight: 600;
   line-height: 120%;
   letter-spacing: 0%;
-  margin-bottom: 59px;
+  margin-bottom: 4.8rem;
   color: var(--color-text-primary);
 
   @media (min-width: 1024px) {

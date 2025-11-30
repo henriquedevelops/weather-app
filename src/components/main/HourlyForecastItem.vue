@@ -17,7 +17,7 @@ defineProps<HourlyForecastItem>()
       <SnowIcon />
     </figure>
     <data class="hour-item__temp" :value="temperature" aria-label="Temperature"
-      >{{ temperature }}°C</data
+      >{{ temperature }} °C</data
     >
   </article>
 </template>
