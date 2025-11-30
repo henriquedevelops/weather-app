@@ -1,38 +1,136 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onUnmounted } from 'vue'
 import { useWeatherStore } from '@/stores/weather'
 import { getTemperatureColor } from '@/utils/temperatureColors'
 
 const weatherStore = useWeatherStore()
 const searchQuery = ref('')
+const showAutocomplete = ref(false)
+const autocompleteRef = ref<HTMLElement | null>(null)
+const inputRef = ref<HTMLInputElement | null>(null)
 
-async function handleSearch() {
-  if (searchQuery.value.trim()) {
-    await weatherStore.fetchWeather(searchQuery.value.trim())
-    searchQuery.value = ''
+// Debounce search
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
+watch(searchQuery, (newValue) => {
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
   }
+
+  if (newValue.trim()) {
+    searchTimeout = setTimeout(() => {
+      weatherStore.searchLocations(newValue.trim())
+      showAutocomplete.value = true
+    }, 300)
+  } else {
+    showAutocomplete.value = false
+    weatherStore.clearSearchResults()
+  }
+})
+
+async function handleSearch(query?: string) {
+  const locationQuery = query || searchQuery.value.trim()
+  if (locationQuery) {
+    weatherStore.selectLocation(locationQuery)
+    searchQuery.value = ''
+    showAutocomplete.value = false
+  }
+}
+
+async function handleSelectLocation(location: {
+  id: number
+  name: string
+  region: string
+  country: string
+  url: string
+}) {
+  // Add location to saved locations and select it
+  weatherStore.addSavedLocation(location)
+  searchQuery.value = ''
+  showAutocomplete.value = false
 }
 
 function handleKeyPress(event: KeyboardEvent) {
   if (event.key === 'Enter') {
-    handleSearch()
+    if (weatherStore.searchResults.length > 0 && weatherStore.searchResults[0]) {
+      // Select first result if available
+      handleSelectLocation(weatherStore.searchResults[0])
+    } else {
+      handleSearch()
+    }
+  } else if (event.key === 'Escape') {
+    showAutocomplete.value = false
   }
 }
+
+// Close autocomplete when clicking outside
+function handleClickOutside(event: MouseEvent) {
+  if (
+    autocompleteRef.value &&
+    !autocompleteRef.value.contains(event.target as Node) &&
+    inputRef.value &&
+    !inputRef.value.contains(event.target as Node)
+  ) {
+    showAutocomplete.value = false
+  }
+}
+
+// Add click outside listener
+if (typeof window !== 'undefined') {
+  document.addEventListener('click', handleClickOutside)
+}
+
+// Cleanup
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    document.removeEventListener('click', handleClickOutside)
+  }
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+})
 
 const borderColor = computed(() => getTemperatureColor(weatherStore.currentTemperature))
 </script>
 
 <template>
-  <input
-    v-model="searchQuery"
-    type="text"
-    placeholder="Search for a city"
-    :style="{ borderColor, borderWidth: '2px', borderStyle: 'solid' }"
-    @keypress="handleKeyPress"
-  />
+  <div class="search-container">
+    <input
+      ref="inputRef"
+      v-model="searchQuery"
+      type="text"
+      placeholder="Search for a city"
+      :style="{ borderColor, borderWidth: '2px', borderStyle: 'solid' }"
+      @keypress="handleKeyPress"
+      @focus="
+        showAutocomplete = searchQuery.trim().length > 0 && weatherStore.searchResults.length > 0
+      "
+    />
+    <div
+      v-if="showAutocomplete && weatherStore.searchResults.length > 0"
+      ref="autocompleteRef"
+      class="autocomplete-dropdown"
+    >
+      <button
+        v-for="result in weatherStore.searchResults"
+        :key="result.id"
+        type="button"
+        class="autocomplete-item"
+        @click="handleSelectLocation(result)"
+      >
+        <span class="autocomplete-item__name">{{ result.name }}</span>
+        <span class="autocomplete-item__location">{{ result.region }}, {{ result.country }}</span>
+      </button>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
+.search-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 2.4rem;
+}
+
 input {
   height: 4.8rem;
   padding-inline: 1rem;
@@ -45,13 +143,64 @@ input {
   min-width: 0;
   box-sizing: border-box;
   transition: border-color 0.3s ease;
-  margin-bottom: 2.4rem;
 
   &:focus {
     border-color: var(--color-weather-blue);
   }
 
   &::placeholder {
+    color: var(--color-text-secondary);
+  }
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-height: 20rem;
+  overflow-y: auto;
+  margin-bottom: 2.4rem;
+}
+
+.autocomplete-item {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding: 1.2rem 1.6rem;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  gap: 0.4rem;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  &:first-child {
+    border-radius: 10px 10px 0 0;
+  }
+
+  &:last-child {
+    border-radius: 0 0 10px 10px;
+  }
+
+  &__name {
+    font-weight: 600;
+    font-size: 1.4rem;
+    color: var(--color-text-primary);
+  }
+
+  &__location {
+    font-weight: 400;
+    font-size: 1.2rem;
     color: var(--color-text-secondary);
   }
 }

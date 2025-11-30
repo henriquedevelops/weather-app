@@ -1,28 +1,41 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useWeatherStore } from '@/stores/weather'
 import WeatherIcon from '@/components/WeatherIcon.vue'
 import { getTemperatureColor } from '@/utils/temperatureColors'
 
 interface HourlyForecastItem {
-  time: string
-  temperature: number
-  conditionCode: number | null
+  time?: string
+  temperature?: number
+  conditionCode?: number | null
 }
 
 const props = defineProps<HourlyForecastItem>()
+const weatherStore = useWeatherStore()
 
-const backgroundColor = computed(() => getTemperatureColor(props.temperature))
+const backgroundColor = computed(() => {
+  if (!props.temperature) return undefined
+  return getTemperatureColor(props.temperature)
+})
 </script>
 
 <template>
-  <article class="hour-item">
+  <!-- Skeleton State -->
+  <article v-if="weatherStore.loading" class="hour-item skeleton">
+    <div class="skeleton-element skeleton-time" />
+    <figure class="hour-item__icon skeleton-element" />
+    <div class="skeleton-element skeleton-temp" />
+  </article>
+
+  <!-- Content State -->
+  <article v-else class="hour-item">
     <time class="hour-item__time" :datetime="time">{{ time }}</time>
     <figure
       class="hour-item__icon"
       :style="{ backgroundColor }"
       aria-label="Weather condition icon"
     >
-      <WeatherIcon :condition-code="conditionCode" />
+      <WeatherIcon :condition-code="conditionCode ?? null" />
     </figure>
     <data class="hour-item__temp" :value="temperature" aria-label="Temperature"
       >{{ temperature }} °C</data
@@ -73,5 +86,28 @@ const backgroundColor = computed(() => getTemperatureColor(props.temperature))
 
     display: block;
   }
+}
+
+// Skeleton Styles
+.skeleton-element {
+  background: #f0f0f0;
+  border-radius: 0.4rem;
+}
+
+.skeleton-time {
+  width: 6rem;
+  height: 2.4rem;
+}
+
+.skeleton .hour-item__icon {
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  background: #f0f0f0;
+}
+
+.skeleton-temp {
+  width: 4rem;
+  height: 2.4rem;
 }
 </style>

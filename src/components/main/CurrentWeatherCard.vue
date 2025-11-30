@@ -14,7 +14,20 @@ const iconContainerBackgroundColor = computed(() =>
 </script>
 
 <template>
-  <article class="container" :style="{ background: backgroundColor }">
+  <!-- Skeleton State -->
+  <article v-if="weatherStore.loading" class="container skeleton">
+    <figure class="icon-weather-container skeleton-element" />
+    <div class="weather-card__city">
+      <div class="skeleton-element skeleton-text-large" />
+      <div class="skeleton-element skeleton-text-small" />
+    </div>
+    <div class="weather-card__temperature">
+      <div class="skeleton-element skeleton-text-xlarge" />
+    </div>
+  </article>
+
+  <!-- Content State -->
+  <article v-else class="container" :style="{ background: backgroundColor }">
     <figure
       class="icon-weather-container"
       :style="{ backgroundColor: iconContainerBackgroundColor }"
@@ -156,6 +169,58 @@ const iconContainerBackgroundColor = computed(() =>
         font-size: 3.2rem;
       }
     }
+  }
+}
+
+// ============================================
+// Skeleton Styles
+// ============================================
+.skeleton {
+  background: #f0f0f0;
+}
+
+.skeleton-element {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 0.4rem;
+}
+
+.skeleton-text-large {
+  width: 12rem;
+  height: 2.4rem;
+
+  @media (min-width: 1024px) {
+    width: 18rem;
+    height: 3.8rem;
+  }
+}
+
+.skeleton-text-small {
+  width: 10rem;
+  height: 1.4rem;
+
+  @media (min-width: 1024px) {
+    width: 14rem;
+    height: 1.6rem;
+  }
+}
+
+.skeleton-text-xlarge {
+  width: 8rem;
+  height: 5.2rem;
+
+  @media (min-width: 1024px) {
+    width: 16rem;
+    height: 12rem;
+  }
+}
+
+.skeleton .icon-weather-container {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+
+  @media (min-width: 1024px) {
+    width: 10rem;
+    height: 10rem;
   }
 }
 </style>

@@ -1,28 +1,35 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { getTemperatureColor } from '@/utils/temperatureColors'
+import { useWeatherStore } from '@/stores/weather'
 
 interface Props {
   label: string
-  isActive: boolean
   temperature: number | null
+  query: string
 }
 
 const props = defineProps<Props>()
+const weatherStore = useWeatherStore()
 
-const emit = defineEmits<{
-  click: [label: string]
-}>()
+const isActive = computed(() => {
+  return props.query === weatherStore.selectedLocation
+})
 
 const backgroundColor = computed(() => {
-  if (props.isActive && props.temperature !== null) {
+  if (isActive.value && props.temperature !== null) {
     return getTemperatureColor(props.temperature)
   }
   return undefined
 })
 
+const handleSelect = (locationQuery: string) => {
+  if (isActive.value) return
+  weatherStore.selectLocation(locationQuery)
+}
+
 const handleClick = () => {
-  emit('click', props.label)
+  handleSelect(props.query)
 }
 </script>
 

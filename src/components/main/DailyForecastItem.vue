@@ -1,24 +1,40 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useWeatherStore } from '@/stores/weather'
 import WeatherIcon from '@/components/WeatherIcon.vue'
 import { getTemperatureColor } from '@/utils/temperatureColors'
 
 interface DailyForecastItem {
-  day: string
-  condition: string
-  temperature: number
-  conditionCode: number | null
+  day?: string
+  condition?: string
+  temperature?: number
+  conditionCode?: number | null
 }
 
 const props = defineProps<DailyForecastItem>()
+const weatherStore = useWeatherStore()
 
-const backgroundColor = computed(() => getTemperatureColor(props.temperature))
+const backgroundColor = computed(() => {
+  if (!props.temperature) return undefined
+  return getTemperatureColor(props.temperature)
+})
 </script>
 
 <template>
-  <article class="day-item" :style="{ backgroundColor }">
+  <!-- Skeleton State -->
+  <article v-if="weatherStore.loading" class="day-item skeleton">
+    <figure class="day-item__icon skeleton-element" />
+    <div class="day-item__info">
+      <div class="skeleton-element skeleton-day" />
+      <div class="skeleton-element skeleton-condition" />
+    </div>
+    <div class="skeleton-element skeleton-temp" />
+  </article>
+
+  <!-- Content State -->
+  <article v-else class="day-item" :style="{ backgroundColor }">
     <figure class="day-item__icon" aria-label="Weather condition icon">
-      <WeatherIcon :condition-code="conditionCode" />
+      <WeatherIcon :condition-code="conditionCode ?? null" />
     </figure>
     <div class="day-item__info">
       <h3 class="day-item__day">{{ day }}</h3>
@@ -100,5 +116,35 @@ const backgroundColor = computed(() => getTemperatureColor(props.temperature))
     color: var(--color-text-primary);
     display: block;
   }
+}
+
+// Skeleton Styles
+.skeleton {
+  background: #f0f0f0;
+}
+
+.skeleton-element {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 0.4rem;
+}
+
+.skeleton .day-item__icon {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+}
+
+.skeleton-day {
+  width: 8rem;
+  height: 2.2rem;
+}
+
+.skeleton-condition {
+  width: 10rem;
+  height: 1.4rem;
+}
+
+.skeleton-temp {
+  width: 5rem;
+  height: 2.4rem;
 }
 </style>
