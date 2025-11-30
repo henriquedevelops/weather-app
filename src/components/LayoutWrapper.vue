@@ -28,6 +28,7 @@ import LocationTabs from './header/LocationTabs.vue'
     justify-content: center;
     margin: 0 auto;
     max-width: 100%;
+    max-width: 1100px;
   }
 }
 

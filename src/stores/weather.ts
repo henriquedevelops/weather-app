@@ -68,8 +68,6 @@ export const useWeatherStore = defineStore('weather', () => {
   const selectedLocationWeatherData = ref<WeatherData | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
-
-  // Saved locations
   const savedLocations = ref<SavedLocation[]>([
     { id: 1, label: 'Denver 🏔', query: 'Denver' },
     { id: 2, label: 'Rio de Janeiro ⛱', query: 'Rio de Janeiro' },
@@ -77,108 +75,9 @@ export const useWeatherStore = defineStore('weather', () => {
     { id: 4, label: 'Tokyo 🍣', query: 'Tokyo' },
     { id: 5, label: 'Sydney 🐨', query: 'Sydney' },
   ])
-
-  // Autocomplete search results
   const searchResults = ref<LocationSearchResult[]>([])
   const isSearching = ref(false)
 
-  function selectLocation(newLocation: string) {
-    // Immediately update selected location
-    selectedLocation.value = newLocation
-    // Reset weather data to empty
-    selectedLocationWeatherData.value = null
-    // Fetch weather data
-    fetchWeather(newLocation)
-  }
-
-  async function searchLocations(query: string) {
-    if (!query.trim()) {
-      searchResults.value = []
-      return
-    }
-
-    isSearching.value = true
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/search.json?key=${API_KEY}&q=${encodeURIComponent(query)}`,
-      )
-
-      if (!response.ok) {
-        throw new Error(`Failed to search locations: ${response.statusText}`)
-      }
-
-      const data: LocationSearchResult[] = await response.json()
-      searchResults.value = data.slice(0, 5) // Limit to 5 results
-    } catch (err) {
-      console.error('Error searching locations:', err)
-      searchResults.value = []
-    } finally {
-      isSearching.value = false
-    }
-  }
-
-  function clearSearchResults() {
-    searchResults.value = []
-  }
-
-  function addSavedLocation(location: LocationSearchResult) {
-    const locationAlreadyExists = savedLocations.value.some(
-      (loc) => loc.query.toLowerCase() === location.name.toLowerCase(),
-    )
-    if (locationAlreadyExists) {
-      // Immediately select the existing location
-      selectLocation(location.name)
-      return
-    }
-
-    // Generate a simple label
-    const label = `${location.name}, ${location.region || location.country}`
-    const newId = Math.max(...savedLocations.value.map((l) => l.id), 0) + 1
-
-    savedLocations.value.push({
-      id: newId,
-      label,
-      query: location.name,
-    })
-
-    // Immediately select the newly added location
-    selectLocation(location.name)
-  }
-
-  function removeSavedLocation(id: number) {
-    const index = savedLocations.value.findIndex((loc) => loc.id === id)
-    if (index > -1) savedLocations.value.splice(index, 1)
-  }
-
-  async function fetchWeather(locationQuery?: string) {
-    const query = locationQuery || selectedLocation.value || 'Denver'
-    if (!query) return
-
-    loading.value = true
-    error.value = null
-
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/forecast.json?key=${API_KEY}&q=${encodeURIComponent(query)}&days=7&aqi=no&alerts=no`,
-      )
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch weather data: ${response.statusText}`)
-      }
-
-      const data: WeatherData = await response.json()
-      // Set the weather data for the selected location
-      selectedLocationWeatherData.value = data
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to fetch weather data'
-      console.error('Error fetching weather data:', err)
-    } finally {
-      loading.value = false
-    }
-  }
-
-  // Computed properties for easier access
-  const currentLocationName = computed(() => selectedLocationWeatherData.value?.location.name)
   const currentTemperature = computed(() =>
     selectedLocationWeatherData.value?.current.temp_c != null
       ? Math.round(selectedLocationWeatherData.value.current.temp_c)
@@ -257,6 +156,101 @@ export const useWeatherStore = defineStore('weather', () => {
     })
   })
 
+  async function fetchWeather(locationQuery?: string) {
+    const query = locationQuery || selectedLocation.value || 'Denver'
+    if (!query) return
+
+    loading.value = true
+    error.value = null
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/forecast.json?key=${API_KEY}&q=${encodeURIComponent(query)}&days=7&aqi=no&alerts=no`,
+      )
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch weather data: ${response.statusText}`)
+      }
+
+      const data: WeatherData = await response.json()
+      // Set the weather data for the selected location
+      selectedLocationWeatherData.value = data
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Failed to fetch weather data'
+      console.error('Error fetching weather data:', err)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function searchLocations(query: string) {
+    if (!query.trim()) {
+      searchResults.value = []
+      return
+    }
+
+    isSearching.value = true
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/search.json?key=${API_KEY}&q=${encodeURIComponent(query)}`,
+      )
+
+      if (!response.ok) {
+        throw new Error(`Failed to search locations: ${response.statusText}`)
+      }
+
+      const data: LocationSearchResult[] = await response.json()
+      searchResults.value = data.slice(0, 5) // Limit to 5 results
+    } catch (err) {
+      console.error('Error searching locations:', err)
+      searchResults.value = []
+    } finally {
+      isSearching.value = false
+    }
+  }
+
+  function selectLocation(newLocation: string) {
+    // Immediately update selected location
+    selectedLocation.value = newLocation
+    // Reset weather data to empty
+    selectedLocationWeatherData.value = null
+    // Fetch weather data
+    fetchWeather(newLocation)
+  }
+
+  function addSavedLocation(location: LocationSearchResult) {
+    const locationAlreadyExists = savedLocations.value.some(
+      (loc) => loc.query.toLowerCase() === location.name.toLowerCase(),
+    )
+    if (locationAlreadyExists) {
+      // Immediately select the existing location
+      selectLocation(location.name)
+      return
+    }
+
+    // Generate a simple label
+    const label = `${location.name}, ${location.region || location.country}`
+    const newId = Math.max(...savedLocations.value.map((l) => l.id), 0) + 1
+
+    savedLocations.value.push({
+      id: newId,
+      label,
+      query: location.name,
+    })
+
+    // Immediately select the newly added location
+    selectLocation(location.name)
+  }
+
+  function clearSearchResults() {
+    searchResults.value = []
+  }
+
+  function removeSavedLocation(id: number) {
+    const index = savedLocations.value.findIndex((loc) => loc.id === id)
+    if (index > -1) savedLocations.value.splice(index, 1)
+  }
+
   return {
     selectedLocation,
     selectedLocationWeatherData,
@@ -271,7 +265,6 @@ export const useWeatherStore = defineStore('weather', () => {
     clearSearchResults,
     addSavedLocation,
     removeSavedLocation,
-    currentLocationName,
     currentTemperature,
     currentCondition,
     currentConditionCode,

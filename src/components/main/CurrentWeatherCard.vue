@@ -36,7 +36,7 @@ const iconContainerBackgroundColor = computed(() =>
     </figure>
 
     <div class="weather-card__city">
-      <h2 class="city-name">{{ weatherStore.currentLocationName }}</h2>
+      <h2 class="city-name">{{ weatherStore.selectedLocation }}</h2>
       <p class="weather-condition">{{ weatherStore.currentCondition }}</p>
     </div>
 
