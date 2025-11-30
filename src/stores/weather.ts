@@ -1,104 +1,19 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import type { WeatherData, LocationSearchResult } from '@/types/weather'
+import { defaultLocations } from '@/data/defaultLocations'
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY
 const API_BASE_URL = import.meta.env.VITE_WEATHER_API_BASE_URL
 
-interface CurrentWeather {
-  temp_c: number
-  condition: {
-    text: string
-    code: number
-  }
-  location?: {
-    name: string
-    region: string
-    country: string
-  }
-}
-
-interface ForecastDay {
-  date: string
-  day: {
-    maxtemp_c: number
-    mintemp_c: number
-    condition: {
-      text: string
-      code: number
-    }
-  }
-  hour: Array<{
-    time: string
-    temp_c: number
-    condition: {
-      text: string
-      code: number
-    }
-  }>
-}
-
-interface WeatherData {
-  location: {
-    name: string
-    region: string
-    country: string
-  }
-  current: CurrentWeather
-  forecast: {
-    forecastday: ForecastDay[]
-  }
-}
-
-export interface LocationSearchResult {
-  id: number
-  name: string
-  region: string
-  country: string
-  url: string
-}
+export type { LocationSearchResult }
 
 export const useWeatherStore = defineStore('weather', () => {
   const selectedLocation = ref<string>('Denver')
   const selectedLocationWeatherData = ref<WeatherData | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
-  const savedLocations = ref<LocationSearchResult[]>([
-    {
-      id: 1,
-      name: 'Denver',
-      region: 'Colorado',
-      country: 'United States',
-      url: 'https://www.google.com/maps/place/Denver,+CO,+USA',
-    },
-    {
-      id: 2,
-      name: 'Rio de Janeiro',
-      region: 'Rio de Janeiro',
-      country: 'Brazil',
-      url: 'https://www.google.com/maps/place/Rio+de+Janeiro,+Brazil',
-    },
-    {
-      id: 3,
-      name: 'Madrid',
-      region: 'Madrid',
-      country: 'Spain',
-      url: 'https://www.google.com/maps/place/Madrid,+Spain',
-    },
-    {
-      id: 4,
-      name: 'Tokyo',
-      region: 'Tokyo',
-      country: 'Japan',
-      url: 'https://www.google.com/maps/place/Tokyo,+Japan',
-    },
-    {
-      id: 5,
-      name: 'Sydney',
-      region: 'Sydney',
-      country: 'Australia',
-      url: 'https://www.google.com/maps/place/Sydney,+Australia',
-    },
-  ])
+  const savedLocations = ref<LocationSearchResult[]>([...defaultLocations])
   const searchResults = ref<LocationSearchResult[]>([])
   const isSearching = ref(false)
 
@@ -112,34 +27,50 @@ export const useWeatherStore = defineStore('weather', () => {
     () => selectedLocationWeatherData.value?.current.condition.code ?? null,
   )
 
-  // Get hourly forecast for the next 5 hours
+  // Get hourly forecast for the next 5 hours based on the location's local time
   const hourlyForecast = computed(() => {
-    if (!selectedLocationWeatherData.value?.forecast.forecastday[0]) return []
-    const today = selectedLocationWeatherData.value.forecast.forecastday[0]
-    const now = new Date()
-    const currentTime = now.getTime()
+    const today = selectedLocationWeatherData.value?.forecast.forecastday[0]
+    if (!today) return []
+    if (!selectedLocationWeatherData.value?.location.localtime) return []
 
-    // Get hours from now onwards
-    const upcomingHours = today.hour
-      .filter((hour) => {
-        const hourDate = new Date(hour.time)
-        return hourDate.getTime() >= currentTime
-      })
-      .slice(0, 5)
-
-    // If we don't have enough hours for today, include hours from tomorrow
     const forecastDays = selectedLocationWeatherData.value.forecast.forecastday
-    if (upcomingHours.length < 5 && forecastDays.length > 1 && forecastDays[1]) {
+
+    // Get the current hour at the location (not the user's local time)
+    const locationLocalTime = new Date(selectedLocationWeatherData.value.location.localtime)
+    const currentHour = locationLocalTime.getHours()
+
+    // Collect all available hours from today and tomorrow
+    const allHours: Array<{
+      time: string
+      temp_c: number
+      condition: { text: string; code: number }
+    }> = []
+
+    // Add hours from today starting from the current hour
+    today.hour.forEach((hour) => {
+      const hourTime = new Date(hour.time)
+      if (hourTime.getHours() >= currentHour) {
+        allHours.push(hour)
+      }
+    })
+
+    // Add hours from tomorrow if we need more
+    if (allHours.length < 5 && forecastDays.length > 1 && forecastDays[1]) {
       const tomorrow = forecastDays[1]
-      const remainingHours = 5 - upcomingHours.length
-      const tomorrowHours = tomorrow.hour.slice(0, remainingHours)
-      upcomingHours.push(...tomorrowHours)
+      tomorrow.hour.forEach((hour) => {
+        if (allHours.length < 5) {
+          allHours.push(hour)
+        }
+      })
     }
+
+    // Take only 5 hours
+    const upcomingHours = allHours.slice(0, 5)
 
     return upcomingHours.map((hour, index) => {
       const hourDate = new Date(hour.time)
-      const timeDiff = hourDate.getTime() - currentTime
-      const isNow = index === 0 && timeDiff < 3600000 // Within 1 hour
+      // First item is always "Now"
+      const isNow = index === 0
       return {
         time: isNow
           ? 'Now'
