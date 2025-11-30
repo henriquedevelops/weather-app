@@ -49,9 +49,8 @@ const backgroundColor = computed(() => {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  gap: 0.6rem;
   width: 14.4rem;
-  height: 17.72rem;
+  height: 17.2rem;
 
   &__time {
     color: var(--color-text-secondary);

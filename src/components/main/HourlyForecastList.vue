@@ -34,7 +34,6 @@ const itemsToRender = computed(() => {
   list-style: none;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
-  padding-inline: var(--padding-horizontal-main);
 
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
