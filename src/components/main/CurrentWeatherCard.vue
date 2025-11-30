@@ -33,6 +33,7 @@ import SnowIcon from '~icons/local/snow'
   padding-inline: 1.6rem;
   background: var(--color-weather-blue);
   border-radius: 2rem;
+  grid-row: span 2;
 
   @media (min-width: 1024px) {
     grid-template-columns: 1fr;
