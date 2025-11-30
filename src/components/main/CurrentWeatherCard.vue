@@ -1,13 +1,24 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useWeatherStore } from '@/stores/weather'
 import WeatherIcon from '@/components/WeatherIcon.vue'
+import { getTemperatureColor, getDarkenedTemperatureColor } from '@/utils/temperatureColors'
 
 const weatherStore = useWeatherStore()
+
+const backgroundColor = computed(() => getTemperatureColor(weatherStore.currentTemperature))
+
+const iconContainerBackgroundColor = computed(() =>
+  getDarkenedTemperatureColor(weatherStore.currentTemperature),
+)
 </script>
 
 <template>
-  <article class="container">
-    <figure class="icon-weather-container">
+  <article class="container" :style="{ background: backgroundColor }">
+    <figure
+      class="icon-weather-container"
+      :style="{ backgroundColor: iconContainerBackgroundColor }"
+    >
       <WeatherIcon :condition-code="weatherStore.currentConditionCode" class="icon-weather" />
     </figure>
 
@@ -36,7 +47,6 @@ const weatherStore = useWeatherStore()
   gap: 1.5rem;
   height: 9.7rem;
   padding-inline: 1.6rem;
-  background: var(--color-weather-blue);
   border-radius: 2rem;
   grid-row: span 2;
 
@@ -60,7 +70,7 @@ const weatherStore = useWeatherStore()
     justify-content: center;
     width: 6rem;
     height: 6rem;
-    background-color: #aed3f4;
+
     border-radius: 50%;
 
     @media (min-width: 1024px) {

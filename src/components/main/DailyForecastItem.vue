@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import WeatherIcon from '@/components/WeatherIcon.vue'
+import { getTemperatureColor } from '@/utils/temperatureColors'
 
 interface DailyForecastItem {
   day: string
@@ -8,11 +10,13 @@ interface DailyForecastItem {
   conditionCode: number | null
 }
 
-defineProps<DailyForecastItem>()
+const props = defineProps<DailyForecastItem>()
+
+const backgroundColor = computed(() => getTemperatureColor(props.temperature))
 </script>
 
 <template>
-  <article class="day-item" :style="{ backgroundColor: '#c3e0fb' }">
+  <article class="day-item" :style="{ backgroundColor }">
     <figure class="day-item__icon" aria-label="Weather condition icon">
       <WeatherIcon :condition-code="conditionCode" />
     </figure>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useWeatherStore } from '@/stores/weather'
+import { getTemperatureColor } from '@/utils/temperatureColors'
 
 const weatherStore = useWeatherStore()
 const searchQuery = ref('')
@@ -17,6 +18,8 @@ function handleKeyPress(event: KeyboardEvent) {
     handleSearch()
   }
 }
+
+const borderColor = computed(() => getTemperatureColor(weatherStore.currentTemperature))
 </script>
 
 <template>
@@ -24,6 +27,7 @@ function handleKeyPress(event: KeyboardEvent) {
     v-model="searchQuery"
     type="text"
     placeholder="Search for a city"
+    :style="{ borderColor, borderWidth: '2px', borderStyle: 'solid' }"
     @keypress="handleKeyPress"
   />
 </template>
@@ -33,7 +37,6 @@ input {
   height: 4.8rem;
   padding-inline: 1rem;
   border-radius: 10px;
-  border: 2px solid var(--color-weather-light-blue);
   background-color: rgba(255, 255, 255, 0.9);
   font-size: 1.4rem;
   outline: none;

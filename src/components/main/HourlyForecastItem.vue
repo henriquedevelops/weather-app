@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import WeatherIcon from '@/components/WeatherIcon.vue'
+import { getTemperatureColor } from '@/utils/temperatureColors'
 
 interface HourlyForecastItem {
   time: string
@@ -7,14 +9,20 @@ interface HourlyForecastItem {
   conditionCode: number | null
 }
 
-defineProps<HourlyForecastItem>()
+const props = defineProps<HourlyForecastItem>()
+
+const backgroundColor = computed(() => getTemperatureColor(props.temperature))
 </script>
 
 <template>
   <article class="hour-item">
     <time class="hour-item__time" :datetime="time">{{ time }}</time>
-    <figure class="hour-item__icon" aria-label="Weather condition icon">
-      <WeatherIcon :condition-code />
+    <figure
+      class="hour-item__icon"
+      :style="{ backgroundColor }"
+      aria-label="Weather condition icon"
+    >
+      <WeatherIcon :condition-code="conditionCode" />
     </figure>
     <data class="hour-item__temp" :value="temperature" aria-label="Temperature"
       >{{ temperature }} °C</data

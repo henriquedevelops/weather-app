@@ -94,7 +94,7 @@ export const useWeatherStore = defineStore('weather', () => {
   const currentTemperature = computed(() =>
     currentWeather.value?.temp_c != null ? Math.round(currentWeather.value.temp_c) : null,
   )
-  const currentCondition = computed(() => currentWeather.value?.condition.text || '')
+  const currentCondition = computed(() => currentWeather.value?.condition.text)
   const currentConditionCode = computed(() => currentWeather.value?.condition.code ?? null)
 
   // Get hourly forecast for the next 5 hours

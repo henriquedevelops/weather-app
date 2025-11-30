@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useWeatherStore } from '@/stores/weather'
+import LocationTabButton from './LocationTabButton.vue'
+
 const locations = ref<
   {
     id: number
@@ -10,8 +12,8 @@ const locations = ref<
   { id: 1, label: 'Denver 🏔' },
   { id: 2, label: 'Rio de Janeiro ⛱' },
   { id: 3, label: 'Madrid 💃' },
-  { id: 4, label: 'Japan 🍣' },
-  { id: 5, label: 'Australia 🐨' },
+  { id: 4, label: 'Tokyo 🍣' },
+  { id: 5, label: 'Sydney 🐨' },
 ])
 
 const weatherStore = useWeatherStore()
@@ -19,22 +21,23 @@ const weatherStore = useWeatherStore()
 const handleSelect = (newLocation: string) => {
   weatherStore.selectLocation(newLocation)
 }
+
+const isLocationActive = (locationLabel: string) => {
+  if (!weatherStore.currentLocationName) return false
+  return locationLabel.toLowerCase().includes(weatherStore.currentLocationName.toLowerCase())
+}
 </script>
 
 <template>
   <nav aria-label="Saved locations">
     <ul>
       <li v-for="location in locations" :key="location.id">
-        <button
-          type="button"
-          :data-active="
-            weatherStore.currentLocationName &&
-            location.label.includes(weatherStore.currentLocationName)
-          "
-          @click="handleSelect(location.label)"
-        >
-          {{ location.label }}
-        </button>
+        <LocationTabButton
+          :label="location.label"
+          :is-active="isLocationActive(location.label)"
+          :temperature="weatherStore.currentTemperature"
+          @click="handleSelect"
+        />
       </li>
     </ul>
   </nav>
@@ -57,29 +60,5 @@ ul {
   &::-webkit-scrollbar {
     display: none;
   }
-}
-
-button {
-  height: 3.8rem;
-  padding-inline: 2.4rem;
-  border-radius: 10px;
-  font-size: 1.2rem;
-  white-space: nowrap;
-  color: var(--color-text-secondary);
-  font-weight: 600;
-  font-size: 1.8rem;
-  line-height: 120%;
-  letter-spacing: 0%;
-  text-align: center;
-  transition: background-color 0.3s ease;
-  color: var(--color-text-primary);
-
-  &:hover {
-    background-color: var(--color-weather-light-blue);
-  }
-}
-
-button[data-active='true'] {
-  background-color: var(--color-weather-blue);
 }
 </style>
