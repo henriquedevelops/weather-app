@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import SnowIcon from '~icons/local/snow'
+import WeatherIcon from '@/components/WeatherIcon.vue'
 
 interface DailyForecastItem {
   day: string
   condition: string
   temperature: number
-  icon: string
-  backgroundColor?: string
+  conditionCode: number | null
 }
 
 defineProps<DailyForecastItem>()
 </script>
 
 <template>
-  <article class="day-item" :style="{ backgroundColor: backgroundColor }">
+  <article class="day-item" :style="{ backgroundColor: '#c3e0fb' }">
     <figure class="day-item__icon" aria-label="Weather condition icon">
-      <SnowIcon />
+      <WeatherIcon :condition-code="conditionCode" />
     </figure>
     <div class="day-item__info">
       <h3 class="day-item__day">{{ day }}</h3>

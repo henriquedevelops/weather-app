@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import SnowIcon from '~icons/local/snow'
+import WeatherIcon from '@/components/WeatherIcon.vue'
 
 interface HourlyForecastItem {
   time: string
   temperature: number
-  icon: string
+  conditionCode: number | null
 }
 
 defineProps<HourlyForecastItem>()
@@ -14,7 +14,7 @@ defineProps<HourlyForecastItem>()
   <article class="hour-item">
     <time class="hour-item__time" :datetime="time">{{ time }}</time>
     <figure class="hour-item__icon" aria-label="Weather condition icon">
-      <SnowIcon />
+      <WeatherIcon :condition-code />
     </figure>
     <data class="hour-item__temp" :value="temperature" aria-label="Temperature"
       >{{ temperature }} °C</data

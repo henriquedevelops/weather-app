@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-
-type LocationTab = {
-  id: number
-  label: string
-}
-
-const locations = ref<LocationTab[]>([
+import { useWeatherStore } from '@/stores/weather'
+const locations = ref<
+  {
+    id: number
+    label: string
+  }[]
+>([
   { id: 1, label: 'Denver 🏔' },
   { id: 2, label: 'Rio de Janeiro ⛱' },
   { id: 3, label: 'Madrid 💃' },
@@ -14,10 +14,10 @@ const locations = ref<LocationTab[]>([
   { id: 5, label: 'Australia 🐨' },
 ])
 
-const activeId = ref<number | null>(locations.value[0]?.id ?? null)
+const weatherStore = useWeatherStore()
 
-const handleSelect = (locationId: number) => {
-  activeId.value = locationId
+const handleSelect = (newLocation: string) => {
+  weatherStore.selectLocation(newLocation)
 }
 </script>
 
@@ -27,8 +27,11 @@ const handleSelect = (locationId: number) => {
       <li v-for="location in locations" :key="location.id">
         <button
           type="button"
-          :data-active="location.id === activeId"
-          @click="handleSelect(location.id)"
+          :data-active="
+            weatherStore.currentLocationName &&
+            location.label.includes(weatherStore.currentLocationName)
+          "
+          @click="handleSelect(location.label)"
         >
           {{ location.label }}
         </button>

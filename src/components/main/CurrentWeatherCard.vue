@@ -1,20 +1,25 @@
 <script setup lang="ts">
-import SnowIcon from '~icons/local/snow'
+import { useWeatherStore } from '@/stores/weather'
+import WeatherIcon from '@/components/WeatherIcon.vue'
+
+const weatherStore = useWeatherStore()
 </script>
 
 <template>
   <article class="container">
     <figure class="icon-weather-container">
-      <SnowIcon class="icon-weather" />
+      <WeatherIcon :condition-code="weatherStore.currentConditionCode" class="icon-weather" />
     </figure>
 
     <div class="weather-card__city">
-      <h2 class="city-name">Denver</h2>
-      <p class="weather-condition">Snowing</p>
+      <h2 class="city-name">{{ weatherStore.currentLocationName }}</h2>
+      <p class="weather-condition">{{ weatherStore.currentCondition }}</p>
     </div>
 
     <div class="weather-card__temperature">
-      <data class="temperature-value" value="--">2</data>
+      <data class="temperature-value" :value="weatherStore.currentTemperature ?? undefined">{{
+        weatherStore.currentTemperature
+      }}</data>
       <span class="temperature-unit" aria-label="Temperature unit">°C</span>
     </div>
   </article>

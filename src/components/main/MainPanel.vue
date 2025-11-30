@@ -1,7 +1,16 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
+import { useWeatherStore } from '@/stores/weather'
 import CurrentWeatherCard from './CurrentWeatherCard.vue'
 import HourlyForecastList from './HourlyForecastList.vue'
 import DailyForecastList from './DailyForecastList.vue'
+
+const weatherStore = useWeatherStore()
+
+onMounted(() => {
+  // Fetch initial weather data on component mount
+  weatherStore.fetchWeather()
+})
 </script>
 
 <template>

@@ -1,9 +1,31 @@
 <script setup lang="ts">
-// No functionality yet – this is just the UI shell for now.
+import { ref } from 'vue'
+import { useWeatherStore } from '@/stores/weather'
+
+const weatherStore = useWeatherStore()
+const searchQuery = ref('')
+
+async function handleSearch() {
+  if (searchQuery.value.trim()) {
+    await weatherStore.fetchWeather(searchQuery.value.trim())
+    searchQuery.value = ''
+  }
+}
+
+function handleKeyPress(event: KeyboardEvent) {
+  if (event.key === 'Enter') {
+    handleSearch()
+  }
+}
 </script>
 
 <template>
-  <input type="text" placeholder="Search for a city" />
+  <input
+    v-model="searchQuery"
+    type="text"
+    placeholder="Search for a city"
+    @keypress="handleKeyPress"
+  />
 </template>
 
 <style scoped lang="scss">

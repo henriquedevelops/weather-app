@@ -101,6 +101,7 @@ body {
 
 :where(input[type='number']) {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 /* Remove default styles from range inputs */

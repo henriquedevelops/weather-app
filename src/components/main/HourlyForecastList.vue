@@ -1,19 +1,14 @@
 <script setup lang="ts">
+import { useWeatherStore } from '@/stores/weather'
 import HourlyForecastItem from './HourlyForecastItem.vue'
 
-const hours = [
-  { time: 'Now', temperature: 2, icon: 'snow' },
-  { time: '2 PM', temperature: 4, icon: 'snow' },
-  { time: '3 PM', temperature: 8, icon: 'cloud' },
-  { time: '4 PM', temperature: 10, icon: 'cloud' },
-  { time: '5 PM', temperature: 15, icon: 'sun' },
-]
+const weatherStore = useWeatherStore()
 </script>
 
 <template>
   <ul class="hourly-list" aria-label="Hourly Forecast">
-    <li v-for="(hour, i) in hours" :key="i">
-      <HourlyForecastItem :time="hour.time" :temperature="hour.temperature" :icon="hour.icon" />
+    <li v-for="hour in weatherStore.hourlyForecast" :key="hour.time">
+      <HourlyForecastItem v-bind="hour" />
     </li>
   </ul>
 </template>
