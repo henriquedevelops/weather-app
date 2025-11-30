@@ -17,8 +17,7 @@ const itemsToRender = computed(() => {
 <template>
   <ul class="hourly-list" aria-label="Hourly Forecast">
     <li v-for="(hour, index) in itemsToRender" :key="hour?.time || index">
-      <HourlyForecastItem v-if="hour" v-bind="hour" />
-      <HourlyForecastItem v-else />
+      <HourlyForecastItem v-bind="hour" />
     </li>
   </ul>
 </template>

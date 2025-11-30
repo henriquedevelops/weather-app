@@ -17,8 +17,7 @@ const itemsToRender = computed(() => {
 <template>
   <ul class="daily-row" aria-label="Daily Forecast">
     <li v-for="(item, index) in itemsToRender" :key="item?.day || index">
-      <DailyForecastItem v-if="item" v-bind="item" />
-      <DailyForecastItem v-else />
+      <DailyForecastItem v-bind="item" />
     </li>
   </ul>
 </template>
