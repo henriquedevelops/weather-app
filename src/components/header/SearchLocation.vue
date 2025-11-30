@@ -2,7 +2,7 @@
 import { ref, computed, watch, onUnmounted } from 'vue'
 import { useWeatherStore } from '@/stores/weather'
 import { getTemperatureColor } from '@/utils/temperatureColors'
-
+import type { LocationSearchResult } from '@/stores/weather'
 const weatherStore = useWeatherStore()
 const searchQuery = ref('')
 const showAutocomplete = ref(false)
@@ -27,39 +27,15 @@ watch(searchQuery, (newValue) => {
   }
 })
 
-async function handleSearch(query?: string) {
-  const locationQuery = query || searchQuery.value.trim()
-  if (locationQuery) {
-    weatherStore.selectLocation(locationQuery)
-    searchQuery.value = ''
-    showAutocomplete.value = false
-  }
-}
-
-async function handleSelectLocation(location: {
-  id: number
-  name: string
-  region: string
-  country: string
-  url: string
-}) {
+async function handleSelectLocation(location: LocationSearchResult) {
   // Add location to saved locations and select it
   weatherStore.addSavedLocation(location)
   searchQuery.value = ''
   showAutocomplete.value = false
 }
 
-function handleKeyPress(event: KeyboardEvent) {
-  if (event.key === 'Enter') {
-    if (weatherStore.searchResults.length > 0 && weatherStore.searchResults[0]) {
-      // Select first result if available
-      handleSelectLocation(weatherStore.searchResults[0])
-    } else {
-      handleSearch()
-    }
-  } else if (event.key === 'Escape') {
-    showAutocomplete.value = false
-  }
+function handleKeyPress() {
+  return
 }
 
 // Close autocomplete when clicking outside

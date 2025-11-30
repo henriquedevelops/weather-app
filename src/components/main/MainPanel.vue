@@ -10,13 +10,7 @@ const weatherStore = useWeatherStore()
 const showError = computed(() => weatherStore.error && !weatherStore.loading)
 
 onMounted(() => {
-  // Set initial location if none is selected
-  if (!weatherStore.selectedLocation) {
-    weatherStore.selectLocation('Denver')
-  } else if (!weatherStore.selectedLocationWeatherData) {
-    // If location is selected but no data, fetch it
-    weatherStore.fetchWeather()
-  }
+  weatherStore.fetchWeather()
 })
 </script>
 

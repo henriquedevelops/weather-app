@@ -9,11 +9,7 @@ const weatherStore = useWeatherStore()
   <nav aria-label="Saved locations">
     <ul>
       <li v-for="location in weatherStore.savedLocations" :key="location.id">
-        <LocationTabButton
-          :label="location.label"
-          :temperature="weatherStore.currentTemperature"
-          :query="location.query"
-        />
+        <LocationTabButton :name="location.name" :temperature="weatherStore.currentTemperature" />
       </li>
     </ul>
   </nav>

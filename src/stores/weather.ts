@@ -49,7 +49,7 @@ interface WeatherData {
   }
 }
 
-interface LocationSearchResult {
+export interface LocationSearchResult {
   id: number
   name: string
   region: string
@@ -57,23 +57,47 @@ interface LocationSearchResult {
   url: string
 }
 
-interface SavedLocation {
-  id: number
-  label: string
-  query: string
-}
-
 export const useWeatherStore = defineStore('weather', () => {
-  const selectedLocation = ref<string | null>(null)
+  const selectedLocation = ref<string>('Denver')
   const selectedLocationWeatherData = ref<WeatherData | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
-  const savedLocations = ref<SavedLocation[]>([
-    { id: 1, label: 'Denver 🏔', query: 'Denver' },
-    { id: 2, label: 'Rio de Janeiro ⛱', query: 'Rio de Janeiro' },
-    { id: 3, label: 'Madrid 💃', query: 'Madrid' },
-    { id: 4, label: 'Tokyo 🍣', query: 'Tokyo' },
-    { id: 5, label: 'Sydney 🐨', query: 'Sydney' },
+  const savedLocations = ref<LocationSearchResult[]>([
+    {
+      id: 1,
+      name: 'Denver',
+      region: 'Colorado',
+      country: 'United States',
+      url: 'https://www.google.com/maps/place/Denver,+CO,+USA',
+    },
+    {
+      id: 2,
+      name: 'Rio de Janeiro',
+      region: 'Rio de Janeiro',
+      country: 'Brazil',
+      url: 'https://www.google.com/maps/place/Rio+de+Janeiro,+Brazil',
+    },
+    {
+      id: 3,
+      name: 'Madrid',
+      region: 'Madrid',
+      country: 'Spain',
+      url: 'https://www.google.com/maps/place/Madrid,+Spain',
+    },
+    {
+      id: 4,
+      name: 'Tokyo',
+      region: 'Tokyo',
+      country: 'Japan',
+      url: 'https://www.google.com/maps/place/Tokyo,+Japan',
+    },
+    {
+      id: 5,
+      name: 'Sydney',
+      region: 'Sydney',
+      country: 'Australia',
+      url: 'https://www.google.com/maps/place/Sydney,+Australia',
+    },
   ])
   const searchResults = ref<LocationSearchResult[]>([])
   const isSearching = ref(false)
@@ -218,28 +242,14 @@ export const useWeatherStore = defineStore('weather', () => {
     fetchWeather(newLocation)
   }
 
-  function addSavedLocation(location: LocationSearchResult) {
+  function addSavedLocation(newLocation: LocationSearchResult) {
     const locationAlreadyExists = savedLocations.value.some(
-      (loc) => loc.query.toLowerCase() === location.name.toLowerCase(),
+      (loc) => loc.name.toLowerCase() === newLocation.name.toLowerCase(),
     )
-    if (locationAlreadyExists) {
-      // Immediately select the existing location
-      selectLocation(location.name)
-      return
-    }
+    if (locationAlreadyExists) return
 
-    // Generate a simple label
-    const label = `${location.name}, ${location.region || location.country}`
-    const newId = Math.max(...savedLocations.value.map((l) => l.id), 0) + 1
-
-    savedLocations.value.push({
-      id: newId,
-      label,
-      query: location.name,
-    })
-
-    // Immediately select the newly added location
-    selectLocation(location.name)
+    savedLocations.value.push(newLocation)
+    selectLocation(newLocation.name)
   }
 
   function clearSearchResults() {
