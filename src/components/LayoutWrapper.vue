@@ -23,14 +23,13 @@ import LocationTabs from './header/LocationTabs.vue'
 <style scoped lang="scss">
 .layout-wrapper {
   @media (min-width: 1024px) {
-    width: fit-content;
+    width: 100%;
+    max-width: 1100px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    max-width: 100%;
-    max-width: 1100px;
   }
 }
 
