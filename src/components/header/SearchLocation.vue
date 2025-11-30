@@ -240,7 +240,7 @@ input {
   background-color: white;
   font-size: 1.4rem;
   border: none;
-  outline-color: #f5f5f5;
+  outline-color: var(--color-neutral-100);
   outline-width: 2px;
   outline-style: solid;
   width: 100%;
@@ -248,10 +248,12 @@ input {
   min-width: 0;
   box-sizing: border-box;
   transition: outline-color 0.3s ease;
-
-  &:focus {
-    outline-color: var(--color-weather-blue);
-  }
+  color: var(--color-text-primary);
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 120%;
+  letter-spacing: 0%;
+  text-align: left;
 
   &::placeholder {
     color: var(--color-text-secondary);
