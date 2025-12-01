@@ -9,6 +9,15 @@
   padding: 0;
 }
 
+/* Import Inter Variable (official CDN) */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap; /* prevents FOUT */
+  src: url('https://rsms.me/inter/font-files/Inter-roman.var.woff2?v=4.0') format('woff2');
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   -moz-tab-size: 4;
@@ -16,6 +25,7 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: 'Inter', sans-serif;
 }
 
 html,
