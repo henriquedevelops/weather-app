@@ -179,7 +179,7 @@ export const useWeatherStore = defineStore('weather', () => {
     )
     if (locationAlreadyExists) return
 
-    savedLocations.value.push(newLocation)
+    savedLocations.value.unshift(newLocation)
     selectLocation(newLocation.name)
   }
 
