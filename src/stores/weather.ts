@@ -118,7 +118,8 @@ export const useWeatherStore = defineStore('weather', () => {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/forecast.json?key=${API_KEY}&q=${encodeURIComponent(query)}&days=7&aqi=no&alerts=no`,
+        `${API_BASE_URL}/forecast.json?key=${API_KEY}&q=${encodeURIComponent(query)}&days=7&aqi=no&alerts=no&_t=${Date.now()}`,
+        { cache: 'no-store' },
       )
 
       if (!response.ok) {
@@ -145,7 +146,8 @@ export const useWeatherStore = defineStore('weather', () => {
     isSearching.value = true
     try {
       const response = await fetch(
-        `${API_BASE_URL}/search.json?key=${API_KEY}&q=${encodeURIComponent(query)}`,
+        `${API_BASE_URL}/search.json?key=${API_KEY}&q=${encodeURIComponent(query)}&_t=${Date.now()}`,
+        { cache: 'no-store' },
       )
 
       if (!response.ok) {
