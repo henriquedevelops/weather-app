@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, type Component } from 'vue'
 import { getWeatherIconName } from '@/utils/weatherIcons'
 import ClearCloudyIcon from '~icons/local/clear-cloudy'
 import CloudyIcon from '~icons/local/cloudy'
@@ -25,7 +25,7 @@ const props = defineProps<Props>()
 
 const iconName = computed(() => getWeatherIconName(props.conditionCode))
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, Component> = {
   'clear-cloudy': ClearCloudyIcon,
   cloudy: CloudyIcon,
   drizzle: DrizzleIcon,
@@ -51,4 +51,3 @@ const IconComponent = computed(() => {
 <template>
   <component :is="IconComponent" />
 </template>
-
