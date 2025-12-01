@@ -1,5 +1,8 @@
 import process from 'node:process'
+import os from 'node:os'
 import { defineConfig, devices } from '@playwright/test'
+
+const isMacOS = os.platform() === 'darwin'
 
 /**
  * Read environment variables from file.
@@ -57,12 +60,13 @@ export default defineConfig({
         ...devices['Desktop Firefox'],
       },
     },
-    {
+    // Skip WebKit on macOS due to Bus error compatibility issues
+    ...(!isMacOS ? [{
       name: 'webkit',
       use: {
         ...devices['Desktop Safari'],
       },
-    },
+    }] : []),
 
     /* Test against mobile viewports. */
     // {
