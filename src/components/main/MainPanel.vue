@@ -4,7 +4,7 @@ import { useWeatherStore } from '@/stores/weather'
 import CurrentWeatherCard from './CurrentWeatherCard.vue'
 import HourlyForecastList from './HourlyForecastList.vue'
 import DailyForecastList from './DailyForecastList.vue'
-
+import ErrorIcon from '~icons/local/error'
 const weatherStore = useWeatherStore()
 
 const showError = computed(() => weatherStore.error && !weatherStore.loading)
@@ -18,6 +18,7 @@ onMounted(() => {
   <section>
     <!-- Error State -->
     <div v-if="showError" class="error-container">
+      <ErrorIcon class="error-icon" />
       <p class="error-message">{{ weatherStore.error }}</p>
     </div>
 
@@ -42,30 +43,37 @@ section {
     grid-template-columns: auto 1fr;
     gap: 2.8rem;
   }
-}
 
-.error-container {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 20rem;
-  padding: 3.2rem;
+  .error-container {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 20rem;
+    padding: 3.2rem;
+    gap: 2.6rem;
 
-  @media (min-width: 1024px) {
-    min-height: 40rem;
-  }
-}
+    @media (min-width: 1024px) {
+      min-height: 40rem;
+    }
 
-.error-message {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  text-align: center;
-  line-height: 1.5;
+    .error-icon {
+      width: 6rem;
+      height: 6rem;
+    }
 
-  @media (min-width: 1024px) {
-    font-size: 2.4rem;
+    .error-message {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      text-align: center;
+      line-height: 1.5;
+
+      @media (min-width: 1024px) {
+        font-size: 2.4rem;
+      }
+    }
   }
 }
 </style>

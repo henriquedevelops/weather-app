@@ -130,7 +130,7 @@ export const useWeatherStore = defineStore('weather', () => {
       // Set the weather data for the selected location
       selectedLocationWeatherData.value = data
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to fetch weather data'
+      error.value = 'Failed to load weather data. Please try again later.'
       console.error('Error fetching weather data:', err)
     } finally {
       loading.value = false
