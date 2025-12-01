@@ -265,7 +265,7 @@ input {
   top: calc(100% + 0.4rem);
   left: 0;
   right: 0;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: white;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
