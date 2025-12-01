@@ -18,9 +18,7 @@ export const useWeatherStore = defineStore('weather', () => {
   const isSearching = ref(false)
 
   const currentTemperature = computed(() =>
-    selectedLocationWeatherData.value?.current.temp_c != null
-      ? Math.round(selectedLocationWeatherData.value.current.temp_c)
-      : null,
+    Math.round(selectedLocationWeatherData.value?.current.temp_c ?? 0),
   )
   const currentCondition = computed(() => selectedLocationWeatherData.value?.current.condition.text)
   const currentConditionCode = computed(

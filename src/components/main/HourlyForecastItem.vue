@@ -14,7 +14,6 @@ const props = defineProps<HourlyForecastItem>()
 const weatherStore = useWeatherStore()
 
 const backgroundColor = computed(() => {
-  if (!props.temperature) return undefined
   return getTemperatureColor(props.temperature)
 })
 </script>
