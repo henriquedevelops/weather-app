@@ -15,7 +15,12 @@ const iconContainerBackgroundColor = computed(() =>
 
 <template>
   <!-- Skeleton State -->
-  <article v-if="weatherStore.loading" class="container skeleton">
+  <article
+    v-if="weatherStore.loading"
+    class="container skeleton"
+    aria-busy="true"
+    aria-label="Loading weather data"
+  >
     <figure class="icon-weather-container skeleton-element" />
     <div class="weather-card__city">
       <div class="skeleton-element skeleton-text-large" />

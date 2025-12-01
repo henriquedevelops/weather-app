@@ -29,7 +29,13 @@ const handleClick = () => {
 </script>
 
 <template>
-  <button type="button" :style="{ backgroundColor }" :data-active="isActive" @click="handleClick">
+  <button
+    type="button"
+    :style="{ backgroundColor }"
+    :aria-pressed="isActive"
+    :data-active="isActive"
+    @click="handleClick"
+  >
     {{ name }}
   </button>
 </template>
@@ -53,6 +59,11 @@ button {
   &:hover,
   &[data-active='true'] {
     background-color: #f5f5f5;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-text-primary);
+    outline-offset: 2px;
   }
 }
 </style>

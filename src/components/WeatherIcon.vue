@@ -49,5 +49,5 @@ const IconComponent = computed(() => {
 </script>
 
 <template>
-  <component :is="IconComponent" />
+  <component :is="IconComponent" aria-hidden="true" />
 </template>

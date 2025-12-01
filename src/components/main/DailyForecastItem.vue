@@ -21,7 +21,12 @@ const backgroundColor = computed(() => {
 
 <template>
   <!-- Skeleton State -->
-  <article v-if="weatherStore.loading" class="day-item skeleton">
+  <article
+    v-if="weatherStore.loading"
+    class="day-item skeleton"
+    aria-busy="true"
+    aria-label="Loading daily forecast"
+  >
     <figure class="day-item__icon skeleton-element" />
     <div class="day-item__info">
       <div class="skeleton-element skeleton-day" />

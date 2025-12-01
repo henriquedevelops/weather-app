@@ -15,10 +15,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <section>
+  <section aria-label="Current weather and forecast">
     <!-- Error State -->
-    <div v-if="showError" class="error-container">
-      <ErrorIcon class="error-icon" />
+    <div v-if="showError" class="error-container" role="alert">
+      <ErrorIcon class="error-icon" aria-hidden="true" />
       <p class="error-message">{{ weatherStore.error }}</p>
     </div>
 

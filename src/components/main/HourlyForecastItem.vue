@@ -20,7 +20,12 @@ const backgroundColor = computed(() => {
 
 <template>
   <!-- Skeleton State -->
-  <article v-if="weatherStore.loading" class="hour-item skeleton">
+  <article
+    v-if="weatherStore.loading"
+    class="hour-item skeleton"
+    aria-busy="true"
+    aria-label="Loading hourly forecast"
+  >
     <div class="skeleton-element skeleton-time" />
     <figure class="hour-item__icon skeleton-element" />
     <div class="skeleton-element skeleton-temp" />
