@@ -17,9 +17,11 @@ export const useWeatherStore = defineStore('weather', () => {
   const searchResults = ref<LocationSearchResult[]>([])
   const isSearching = ref(false)
 
-  const currentTemperature = computed(() =>
-    Math.round(selectedLocationWeatherData.value?.current.temp_c ?? 0),
-  )
+  const currentTemperature = computed(() => {
+    const temp = selectedLocationWeatherData.value?.current.temp_c
+    if (!temp) return undefined
+    return Math.round(temp)
+  })
   const currentCondition = computed(() => selectedLocationWeatherData.value?.current.condition.text)
   const currentConditionCode = computed(
     () => selectedLocationWeatherData.value?.current.condition.code ?? null,

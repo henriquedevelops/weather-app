@@ -240,7 +240,7 @@ input {
   background-color: white;
   font-size: 1.4rem;
   border: none;
-  outline-color: var(--color-neutral-100);
+  outline-color: #f5f5f5;
   outline-width: 2px;
   outline-style: solid;
   width: 100%;
