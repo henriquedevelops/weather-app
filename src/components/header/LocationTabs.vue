@@ -30,6 +30,10 @@ ul {
   padding-inline: var(--padding-horizontal-main);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  /* gives the outline room to exist */
+  padding-block: 6px;
+  /* cancels the padding visually so nothing moves */
+  margin-block: -6px;
   scrollbar-width: none;
 
   &::-webkit-scrollbar {
