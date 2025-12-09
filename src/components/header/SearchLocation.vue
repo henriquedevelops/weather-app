@@ -9,7 +9,11 @@ const showAutocomplete = ref(false)
 const autocompleteRef = ref<HTMLElement | null>(null)
 const inputRef = ref<HTMLInputElement | null>(null)
 const focusedIndex = ref(-1)
-const autocompleteId = ref(`autocomplete-${Math.random().toString(36).substr(2, 9)}`)
+const autocompleteId = ref(`autocomplete-${Math.random().toString(36).slice(2, 11)}`)
+const borderColor = computed(() => getTemperatureColor(weatherStore.currentTemperature))
+const activeDescendantId = computed(() =>
+  focusedIndex.value >= 0 ? `${autocompleteId.value}-option-${focusedIndex.value}` : undefined,
+)
 
 // Debounce search
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
@@ -48,6 +52,27 @@ async function handleSelectLocation(location: LocationSearchResult) {
   // Unfocus input after selection
   await nextTick()
   inputRef.value?.blur()
+}
+
+function scrollToFocusedItem() {
+  nextTick(() => {
+    const focusedElement = autocompleteRef.value?.querySelector(
+      `[data-index="${focusedIndex.value}"]`,
+    ) as HTMLElement
+    if (focusedElement && autocompleteRef.value) {
+      const container = autocompleteRef.value
+      const itemTop = focusedElement.offsetTop
+      const itemBottom = itemTop + focusedElement.offsetHeight
+      const containerTop = container.scrollTop
+      const containerBottom = containerTop + container.offsetHeight
+
+      if (itemTop < containerTop) {
+        container.scrollTop = itemTop
+      } else if (itemBottom > containerBottom) {
+        container.scrollTop = itemBottom - container.offsetHeight
+      }
+    }
+  })
 }
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -103,27 +128,6 @@ function handleKeyDown(event: KeyboardEvent) {
   }
 }
 
-function scrollToFocusedItem() {
-  nextTick(() => {
-    const focusedElement = autocompleteRef.value?.querySelector(
-      `[data-index="${focusedIndex.value}"]`,
-    ) as HTMLElement
-    if (focusedElement && autocompleteRef.value) {
-      const container = autocompleteRef.value
-      const itemTop = focusedElement.offsetTop
-      const itemBottom = itemTop + focusedElement.offsetHeight
-      const containerTop = container.scrollTop
-      const containerBottom = containerTop + container.offsetHeight
-
-      if (itemTop < containerTop) {
-        container.scrollTop = itemTop
-      } else if (itemBottom > containerBottom) {
-        container.scrollTop = itemBottom - container.offsetHeight
-      }
-    }
-  })
-}
-
 // Close autocomplete when clicking outside
 function handleClickOutside(event: MouseEvent) {
   if (
@@ -151,11 +155,6 @@ onUnmounted(() => {
     clearTimeout(searchTimeout)
   }
 })
-
-const outlineColor = computed(() => getTemperatureColor(weatherStore.currentTemperature))
-const activeDescendantId = computed(() =>
-  focusedIndex.value >= 0 ? `${autocompleteId.value}-option-${focusedIndex.value}` : undefined,
-)
 </script>
 
 <template>
@@ -167,7 +166,7 @@ const activeDescendantId = computed(() =>
       v-model="searchQuery"
       type="text"
       placeholder="Search for a city"
-      :style="{ outlineColor }"
+      :style="{ borderColor }"
       :aria-expanded="showAutocomplete && weatherStore.searchResults.length > 0"
       :aria-controls="autocompleteId"
       :aria-autocomplete="'list'"
@@ -213,8 +212,8 @@ const activeDescendantId = computed(() =>
   position: absolute;
   width: 1px;
   height: 1px;
-  padding: 0;
   margin: -1px;
+  padding: 0;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
@@ -227,102 +226,98 @@ const activeDescendantId = computed(() =>
   margin-bottom: 2.4rem;
 
   @media (min-width: 1024px) {
+    flex-shrink: 0;
     max-width: 250px;
     margin-bottom: 0;
-    flex-shrink: 0;
-  }
-}
-
-input {
-  height: 4.8rem;
-  padding-inline: 1rem;
-  border-radius: 10px;
-  background-color: white;
-  font-size: 1.4rem;
-  border: none;
-  outline-color: #f5f5f5;
-  outline-width: 2px;
-  outline-style: solid;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  transition: outline-color 0.3s ease;
-  color: var(--color-text-primary);
-  font-weight: 400;
-  font-size: 1.6rem;
-  line-height: 120%;
-  letter-spacing: 0%;
-  text-align: left;
-
-  &::placeholder {
-    color: var(--color-text-secondary);
-  }
-}
-
-.autocomplete-dropdown {
-  position: absolute;
-  top: calc(100% + 0.4rem);
-  left: 0;
-  right: 0;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  max-height: 20rem;
-  overflow-y: auto;
-  margin-bottom: 2.4rem;
-}
-
-.autocomplete-item {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  padding: 1.2rem 1.6rem;
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  gap: 0.4rem;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
   }
 
-  &:focus {
-    outline: 2px solid var(--color-weather-blue);
-    outline-offset: -2px;
-    background-color: rgba(0, 0, 0, 0.05);
-  }
-
-  &--focused {
-    background-color: rgba(0, 0, 0, 0.08);
-  }
-
-  &--focused:focus {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-
-  &:first-child {
-    border-radius: 10px 10px 0 0;
-  }
-
-  &:last-child {
-    border-radius: 0 0 10px 10px;
-  }
-
-  &__name {
-    font-weight: 600;
-    font-size: 1.4rem;
-    color: var(--color-text-primary);
-  }
-
-  &__location {
+  input {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: 4.8rem;
+    padding-inline: 1rem;
+    border: 2px solid #f5f5f5;
+    border-radius: 10px;
+    font-size: 1.6rem;
     font-weight: 400;
-    font-size: 1.2rem;
-    color: var(--color-text-secondary);
+    line-height: 120%;
+    text-align: left;
+    color: var(--color-text-primary);
+    background-color: white;
+    transition: border-color 0.3s ease;
+
+    &::placeholder {
+      color: var(--color-text-secondary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-text-primary);
+      outline-offset: -2px;
+    }
+  }
+
+  .autocomplete-dropdown {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    max-height: 20rem;
+    margin-bottom: 2.4rem;
+    overflow-y: auto;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+    .autocomplete-item {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      gap: 0.4rem;
+      width: 100%;
+      padding: 1.2rem 1.6rem;
+      border: none;
+      text-align: left;
+      background: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover,
+      &:focus {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      &:focus {
+        outline: 2px solid orange;
+        outline-offset: -2px;
+      }
+
+      &--focused {
+        background-color: rgb(255, 0, 0);
+      }
+
+      &:first-child {
+        border-radius: 10px 10px 0 0;
+      }
+
+      &:last-child {
+        border-radius: 0 0 10px 10px;
+      }
+
+      &__name {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--color-text-primary);
+      }
+
+      &__location {
+        font-size: 1.2rem;
+        font-weight: 400;
+        color: var(--color-text-secondary);
+      }
+    }
   }
 }
 </style>
