@@ -86,31 +86,32 @@ const backgroundColor = computed(() => {
     line-height: 130%;
     letter-spacing: 0%;
     text-align: center;
-
     display: block;
   }
-}
 
-// Skeleton Styles
-.skeleton-element {
-  background: #f0f0f0;
-  border-radius: 0.4rem;
-}
+  // Skeleton State
+  &.skeleton {
+    .skeleton-element {
+      background: #f0f0f0;
+      border-radius: 0.4rem;
+    }
 
-.skeleton-time {
-  width: 6rem;
-  height: 2.4rem;
-}
+    .skeleton-time {
+      width: 6rem;
+      height: 2.4rem;
+    }
 
-.skeleton .hour-item__icon {
-  width: 8rem;
-  height: 8rem;
-  border-radius: 50%;
-  background: #f0f0f0;
-}
+    .hour-item__icon {
+      width: 8rem;
+      height: 8rem;
+      border-radius: 50%;
+      background: #f0f0f0;
+    }
 
-.skeleton-temp {
-  width: 4rem;
-  height: 2.4rem;
+    .skeleton-temp {
+      width: 4rem;
+      height: 2.4rem;
+    }
+  }
 }
 </style>
