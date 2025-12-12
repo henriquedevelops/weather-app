@@ -286,16 +286,11 @@ onUnmounted(() => {
 
       &:hover,
       &:focus {
-        background-color: rgba(0, 0, 0, 0.05);
-      }
-
-      &:focus {
-        outline: 2px solid orange;
-        outline-offset: -2px;
+        background-color: #f5f5f5;
       }
 
       &--focused {
-        background-color: rgb(255, 0, 0);
+        background-color: #f5f5f5;
       }
 
       &:first-child {
